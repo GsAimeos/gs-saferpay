@@ -1,5 +1,6 @@
-/.build/*
-/composer.lock
+.build
+*.cache
+composer.lock
 coveralls.json
 coverage.xml
 *.junit.xml
