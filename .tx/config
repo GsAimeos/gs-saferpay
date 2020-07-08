@@ -1,0 +1,15 @@
+[main]
+host = https://www.transifex.com
+minimum_perc = 1
+
+[aimeos-extensions.gs-saferpay-lib-custom]
+file_filter = lib/custom/i18n/<lang>.po
+source_file = lib/custom/i18n/gs-saferpay-custom.pot
+source_lang = en
+type = PO
+
+[aimeos-extensions.gs-saferpay-client-code]
+file_filter = client/i18n/code/<lang>.po
+source_file = client/i18n/code/gs-saferpay-client-code.pot
+source_lang = en
+type = PO

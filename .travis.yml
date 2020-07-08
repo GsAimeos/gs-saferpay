@@ -1,0 +1,34 @@
+sudo: false
+dist: trusty
+language: php
+
+php:
+  - 7.2
+  - 7.1
+  - 7.0
+  - 5.6
+  - 5.5
+
+env:
+  - OMNIPAY_VERSION=~2.0
+  - OMNIPAY_VERSION=~3.0
+
+matrix:
+  fast_finish: true
+  exclude:
+    - php: 5.5
+      env: "OMNIPAY_VERSION=~3.0"
+
+before_script:
+  - git clone --depth=50 --branch=2018.10 git://github.com/aimeos/aimeos-core.git ../aimeos-core
+  - cd ../aimeos-core
+  - mv ../gs-saferpay ext/
+  - travis_retry composer require "php-http/guzzle6-adapter" "omnipay/common:${OMNIPAY_VERSION}" "omnipay/dummy:${OMNIPAY_VERSION}"
+  - mysql -e 'create database aimeos;'
+  - echo "<?php return array( 'db' => array( 'adapter' => 'mysql', 'host' => '127.0.0.1', 'database' => 'aimeos', 'username' => 'root', 'password' => '', 'limit' => 2, 'opt-persistent' => false, 'stmt' => array( \"SET SESSIOn sort_buffer_size=2097144; SET NAMES 'utf8'; SET SESSION sql_mode='ANSI'\" ) ), 'mq' => array( 'adapter' => 'Standard', 'db' => 'db' ) );" > config/resource.php
+
+script:
+  - vendor/bin/phing -Ddir=ext/gs-saferpay setup coverageext checkext
+
+after_success:
+  - php vendor/bin/coveralls -c ext/gs-saferpay/.coveralls.yml
