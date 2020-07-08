@@ -45,7 +45,7 @@ class TestHelper
     private static function getAimeos()
     {
         if (!isset(self::$aimeos)) {
-            require_once 'Bootstrap.php';
+            require_once '.build/vendor/aimeos/aimeos-core/Bootstrap.php';
             spl_autoload_register('Aimeos\\Bootstrap::autoload');
 
             $extdir = dirname(dirname(dirname(dirname(__FILE__))));
