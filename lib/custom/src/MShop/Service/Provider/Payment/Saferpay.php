@@ -23,14 +23,12 @@ declare(strict_types=1);
 
 namespace Aimeos\MShop\Service\Provider\Payment;
 
-use Aimeos\MShop\Service\Provider\Payment\Base;
 use Ticketpark\SaferpayJson\Request;
+use Ticketpark\SaferpayJson\Request\Exception\SaferpayErrorException;
 use Ticketpark\SaferpayJson\Request\PaymentPage;
 use Ticketpark\SaferpayJson\Request\RequestConfig;
 use Ticketpark\SaferpayJson\Request\Transaction;
-use Ticketpark\SaferpayJson\Request\Exception\SaferpayErrorException;
 use Ticketpark\SaferpayJson\Response;
-use Ticketpark\SaferpayJson\Response\ErrorResponse;
 
 /**
  * Payment provider for saferpay.
@@ -123,12 +121,11 @@ class Saferpay extends Base implements
         ],
     ];
 
-    
     /**
      * @var \Aimeos\MShop\Order\Item\Base\Iface
      */
     private $orderBase = null;
-    
+
     /**
      * @var \Aimeos\MShop\Order\Item\Base\Service\Iface
      */
@@ -194,8 +191,8 @@ class Saferpay extends Base implements
      * Returns the calculated amount of the price item
      *
      * @param \Aimeos\MShop\Price\Item\Iface $price Price item
-     * @param boolean $costs Include costs per item
-     * @param boolean $tax Include tax
+     * @param bool $costs Include costs per item
+     * @param bool $tax Include tax
      * @return int Money amount in cents
      */
     protected function getAmount(\Aimeos\MShop\Price\Item\Iface $price, $costs = true, $tax = true): int
@@ -274,7 +271,6 @@ class Saferpay extends Base implements
         );
     }
 
-
     protected function getSuccessUrl(): string
     {
         return parent::getConfigValue(['payment.url-success']);
@@ -345,7 +341,6 @@ class Saferpay extends Base implements
         $result = $this->getConfigValue(['MerchantEmails']);
         return !empty($result) ? explode(',', $result) : null;
     }
-
 
     protected function getRequestConfig(): RequestConfig
     {
@@ -508,10 +503,10 @@ class Saferpay extends Base implements
     protected function getAssertRequest(
         \Aimeos\MShop\Order\Item\Iface $order
     ): PaymentPage\AssertRequest {
-        return (new PaymentPage\AssertRequest(
+        return new PaymentPage\AssertRequest(
             $this->getRequestConfig(),
             $this->getToken($order)
-        ));
+        );
     }
 
     protected function getCaptureRequest(
@@ -528,10 +523,10 @@ class Saferpay extends Base implements
     protected function getCancelRequest(
         \Aimeos\MShop\Order\Item\Iface $order
     ): Transaction\CancelRequest {
-        return (new Transaction\CancelRequest(
+        return new Transaction\CancelRequest(
             $this->getRequestConfig(),
             $this->getTransactionReferenceContainer($order)
-        ));
+        );
     }
 
     /**
@@ -560,7 +555,7 @@ class Saferpay extends Base implements
                 $e->getErrorResponse()->getErrorMessage()
             ));
         }
-        
+
         // Save the transaction id, will be needed later to verify the payment
         $orderBaseItem = $this->getOrderItemBase($order);
         $serviceItem = $this->getOrderItemBaseService($order);
@@ -706,7 +701,7 @@ class Saferpay extends Base implements
                 $requestId,
                 $retryIndicator
             );
-            
+
             // Send the request
             try {
                 $response = $initializeRequest->execute();
@@ -734,7 +729,7 @@ class Saferpay extends Base implements
             // Make sure changed attributes are always saved
             $this->saveOrderBase($orderBaseItem);
         }
-        
+
         // Redirect to the payment page
         //return new \Aimeos\MShop\Common\Helper\Form\Standard($response->getRedirectUrl(), 'GET', []);
         return new \Aimeos\MShop\Common\Item\Helper\Form\Standard($response->getRedirectUrl(), 'GET', []);
@@ -763,7 +758,7 @@ class Saferpay extends Base implements
 
         // Create the CaptureRequest
         $captureRequest = $this->getCaptureRequest($order);
-        
+
         // Send the request
         try {
             $response = $captureRequest->execute();
@@ -846,7 +841,7 @@ class Saferpay extends Base implements
 
         // Create the ancelRequest
         $cancelRequest = $this->getCancelRequest($order);
-        
+
         // Send the request
         try {
             $response = $cancelRequest->execute();
