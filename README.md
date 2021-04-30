@@ -32,7 +32,7 @@ php -r "readfile('https://getcomposer.org/installer');" | php -- --filename=comp
 Add the cache extension name to the "require" section of your ```composer.json``` (or your ```composer.aimeos.json```, depending on what is available) file:
 ```
 "require": [
-    "aimeos/gs-saferpay": "dev-master",
+    "gsaimeos/gs-saferpay": "dev-master",
     ...
 ],
 ```
